@@ -4,11 +4,21 @@ Bot de atendimento automático para WhatsApp com **menu interativo**, **resposta
 
 **Caso de uso:** [Interconnect Imports](docs/contexto/interconnect-imports.txt) — importação de produtos chineses para e-commerce.
 
+## Demonstração
+
+Conversa real no WhatsApp (Baileys + Groq). Não há link público — o bot usa um número dedicado; as imagens abaixo mostram o fluxo em produção.
+
+| Menu, modo IA e contexto B2B | Câmeras, orçamento e handoff humano |
+|:---:|:---:|
+| ![Menu e IA — importação e MOQ](docs/images/demo-01-menu-ia.png) | ![Orçamento em volume e opção 3](docs/images/demo-02-conversa-ia.png) |
+
+> **Interconnect Imports** — menu automático (1–4), IA com contexto da empresa (Groq), orientação comercial sem inventar preços e encaminhamento para atendente humano.
+
 ## Portfólio
 
 | Projeto | Repositório | Demo |
 |---------|-------------|------|
-| **Este bot** | [github.com/rafaelcostr/whatsapp-atendimento-bot](https://github.com/rafaelcostr/whatsapp-atendimento-bot) | — |
+| **Este bot** | [github.com/rafaelcostr/whatsapp-atendimento-bot](https://github.com/rafaelcostr/whatsapp-atendimento-bot) | Screenshots abaixo |
 | **Crypto Dashboard** | [github.com/rafaelcostr/Crypto-Dashboard](https://github.com/rafaelcostr/Crypto-Dashboard) | [crypto-dashboard-iota-peach.vercel.app](https://crypto-dashboard-iota-peach.vercel.app) |
 
 ## Funcionalidades
