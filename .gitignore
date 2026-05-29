@@ -2,5 +2,6 @@ node_modules/
 dist/
 .env
 .auth/
+.cursor/
 *.log
 .DS_Store
