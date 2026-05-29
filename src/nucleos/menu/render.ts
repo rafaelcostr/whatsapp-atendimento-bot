@@ -7,7 +7,7 @@ export function renderMenuPrincipal(menu: MenuConfig, nomeUsuario?: string): str
     .join("\n");
 
   return [
-    `${saudacao} Sou o *${menu.nomeBot}*.`,
+    `${saudacao} Somos a *${menu.nomeBot}*.`,
     "",
     "Como posso ajudar? Escolha uma opção:",
     "",
@@ -22,7 +22,7 @@ export function renderHorario(): string {
     "🕐 *Horário de atendimento — Interconnect Imports*",
     "",
     "Segunda a sexta: 09h às 18h (atendente humano)",
-    "Sábado, domingo e feriados: fechado para humano",
+    "Sábado, domingo e feriados: fechado para atendimento humano",
     "",
     "A IA (opção *1*) pode ajudar com dúvidas gerais a qualquer hora.",
     "",

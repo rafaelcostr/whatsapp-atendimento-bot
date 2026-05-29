@@ -17,7 +17,6 @@ export function criarContainer(env: Env): AppContainer {
   const ia = new GroqIaService(env, log);
   const router = new AtendimentoRouter(env, ia);
   const whatsapp = new WhatsAppGateway(env, log, async (incoming) => {
-    log.info({ jid: incoming.jid, nome: incoming.pushName }, "Mensagem recebida");
     const respostas = await router.processar(incoming);
     for (const resposta of respostas) {
       await whatsapp.enviar(resposta.jid, resposta.text);

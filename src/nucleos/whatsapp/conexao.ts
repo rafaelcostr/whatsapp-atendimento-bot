@@ -14,8 +14,11 @@ import { avaliarMensagem, extrairTexto, resumoPayload } from "./mensagens.js";
 
 export type MensagemHandler = (msg: IncomingMessage) => Promise<void>;
 
+const DELAY_RECONEXAO_MS = 3_000;
+
 export class WhatsAppGateway {
   private socket?: WASocket;
+  private conectando = false;
 
   constructor(
     private readonly env: Env,
@@ -24,6 +27,17 @@ export class WhatsAppGateway {
   ) {}
 
   async iniciar(): Promise<void> {
+    if (this.conectando) return;
+    this.conectando = true;
+
+    try {
+      await this.abrirConexao();
+    } finally {
+      this.conectando = false;
+    }
+  }
+
+  private async abrirConexao(): Promise<void> {
     const { state, saveCreds } = await useMultiFileAuthState(this.env.AUTH_DIR);
     const { version } = await fetchLatestBaileysVersion();
 
@@ -52,10 +66,7 @@ export class WhatsAppGateway {
       if (connection === "open") {
         const me = jidNormalizedUser(sock.authState.creds.me?.id);
         this.log.info(
-          {
-            numero: me,
-            modoTeste: this.env.BOT_MODO_TESTE,
-          },
+          { numero: me, modoTeste: this.env.BOT_MODO_TESTE },
           "WhatsApp conectado — use OUTRO WhatsApp para testar, ou BOT_MODO_TESTE=true na conversa consigo mesmo",
         );
       }
@@ -66,9 +77,11 @@ export class WhatsAppGateway {
         const deveReconectar = status !== DisconnectReason.loggedOut;
         this.log.warn({ status }, "Conexão encerrada");
 
+        this.socket = undefined;
+
         if (deveReconectar) {
-          this.log.info("Reconectando...");
-          void this.iniciar();
+          this.log.info({ delayMs: DELAY_RECONEXAO_MS }, "Reconectando...");
+          setTimeout(() => void this.iniciar(), DELAY_RECONEXAO_MS);
         } else {
           this.log.error("Sessão encerrada. Apague a pasta .auth e escaneie o QR novamente.");
         }
@@ -88,7 +101,7 @@ export class WhatsAppGateway {
         );
 
         if (!aceita || !jid) {
-          this.log.info(
+          this.log.debug(
             {
               motivo,
               fromMe: message.key.fromMe,
@@ -105,12 +118,16 @@ export class WhatsAppGateway {
 
         this.log.info({ jid, fromMe: message.key.fromMe }, "Mensagem recebida");
 
-        await this.onMessage({
-          jid,
-          pushName: message.pushName ?? undefined,
-          text,
-          isGroup: false,
-        });
+        try {
+          await this.onMessage({
+            jid,
+            pushName: message.pushName ?? undefined,
+            text,
+            isGroup: false,
+          });
+        } catch (err) {
+          this.log.error({ err, jid }, "Erro ao processar mensagem");
+        }
       }
     });
   }
